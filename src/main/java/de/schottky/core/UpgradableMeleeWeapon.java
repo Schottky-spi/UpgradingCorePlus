@@ -11,14 +11,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class UpgradableWeapon extends UpgradableItem {
+public class UpgradableMeleeWeapon extends UpgradableItem {
 
     public final double attackDamage;
     public final double attackSpeed;
 
-    public static final Map<Material,UpgradableWeapon> ALL_WEAPONS = new EnumMap<>(Material.class);
+    public static final Map<Material, UpgradableMeleeWeapon> ALL_WEAPONS = new EnumMap<>(Material.class);
 
-    public UpgradableWeapon(
+    public UpgradableMeleeWeapon(
             Tool tool,
             Material material,
             double attackDamage,
@@ -31,7 +31,7 @@ public class UpgradableWeapon extends UpgradableItem {
     }
 
     public static void fromJson(@NotNull JsonObject object, Material material) {
-        new UpgradableWeapon(
+        new UpgradableMeleeWeapon(
                 Tool.valueOf(object.get("tool").getAsString()),
                 material,
                 object.get("attackDamage").getAsDouble(),
@@ -39,22 +39,22 @@ public class UpgradableWeapon extends UpgradableItem {
     }
 
     public static void increaseAttributesOf(@NotNull ItemStack stack, double damage, double attackSpeed) {
-        final UpgradableWeapon weapon = ALL_WEAPONS.get(stack.getType());
+        final UpgradableMeleeWeapon weapon = ALL_WEAPONS.get(stack.getType());
         if (weapon == null) return;
         weapon.increaseAttributes(stack, damage, attackSpeed);
     }
 
     public static OptionalDouble defaultDamage(Material material) {
-        final UpgradableWeapon weapon = ALL_WEAPONS.get(material);
+        final UpgradableMeleeWeapon weapon = ALL_WEAPONS.get(material);
         return weapon == null ? OptionalDouble.empty() : OptionalDouble.of(weapon.attackDamage);
     }
 
     public static OptionalDouble defaultAttackSpeed(Material material) {
-        final UpgradableWeapon weapon = ALL_WEAPONS.get(material);
+        final UpgradableMeleeWeapon weapon = ALL_WEAPONS.get(material);
         return weapon == null ? OptionalDouble.empty() : OptionalDouble.of(weapon.attackSpeed);
     }
 
-    public void increaseAttributes(@NotNull ItemStack stack, double damage, double attackSpeed) {
+    private void increaseAttributes(@NotNull ItemStack stack, double damage, double attackSpeed) {
         AttributeUtil.increaseAttribute(stack, Attribute.GENERIC_ATTACK_DAMAGE, damage, new AttributeModifier(
                 UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF"),
                 "Weapon modifier",

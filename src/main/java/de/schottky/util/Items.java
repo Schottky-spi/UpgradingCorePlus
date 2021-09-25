@@ -1,7 +1,7 @@
 package de.schottky.util;
 
 import de.schottky.core.UpgradableArmor;
-import de.schottky.core.UpgradableWeapon;
+import de.schottky.core.UpgradableMeleeWeapon;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -17,7 +17,7 @@ import java.util.function.Function;
 public class Items {
 
     public static double computeAttackDamage(@NotNull ItemStack stack) {
-        double damage = computeAttribute(stack, Attribute.GENERIC_ATTACK_DAMAGE, 1, UpgradableWeapon::defaultDamage);
+        double damage = computeAttribute(stack, Attribute.GENERIC_ATTACK_DAMAGE, 1, UpgradableMeleeWeapon::defaultDamage);
         if (damage == -1) return -1;
         final ItemMeta meta = Objects.requireNonNull(stack.getItemMeta());
         final Integer level = meta.getEnchants().get(Enchantment.DAMAGE_ALL);
@@ -28,7 +28,7 @@ public class Items {
     }
 
     public static double computeAttackSpeed(@NotNull ItemStack stack) {
-        return computeAttribute(stack, Attribute.GENERIC_ATTACK_SPEED, 4, UpgradableWeapon::defaultAttackSpeed);
+        return computeAttribute(stack, Attribute.GENERIC_ATTACK_SPEED, 4, UpgradableMeleeWeapon::defaultAttackSpeed);
     }
 
     public static double computeArmor(@NotNull ItemStack stack) {
