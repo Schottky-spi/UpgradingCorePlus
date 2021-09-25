@@ -61,12 +61,12 @@
       "tool": "TRIDENT"
     },
     "BOW": {
-      "attackDamage": 1.0,
+      "attackDamage": 0.0,
       "attackSpeed": 0.0,
       "tool": "BOW"
     },
     "CROSSBOW": {
-      "attackDamage": 1.0,
+      "attackDamage": 0.0,
       "attackSpeed": 0.0,
       "tool": "CROSSBOW"
     },
