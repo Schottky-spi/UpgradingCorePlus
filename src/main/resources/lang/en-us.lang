@@ -26,6 +26,7 @@
   "ident.armor_toughness": "Armor toughness",
   "ident.damage": "Damage",
   "ident.attack_speed": "Attack speed",
+  "ident.arrow_damage": "Arrow damage",
   "tool.turtle": "turtle",
   "tool.trident": "trident",
   "tool.wood": "wood",
@@ -35,5 +36,7 @@
   "tool.iron": "iron",
   "tool.gold": "gold",
   "tool.diamond": "diamond",
-  "tool.netherite": "Netherite"
+  "tool.netherite": "netherite",
+  "tool.bow": "bow",
+  "tool.crossbow": "crossbow"
 }
