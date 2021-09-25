@@ -94,6 +94,16 @@
     <dependencies>
         <dependency>
             <groupId>com.github.Schottky-spi</groupId>
+            <artifactId>zener-menu</artifactId>
+            <version>v0.9.9.3-SNAPSHOT</version> <!-- Local jar -->
+        </dependency>
+        <dependency>
+            <groupId>com.github.Schottky-spi</groupId>
+            <artifactId>zener-api</artifactId>
+            <version>v1.0-SNAPSHOT</version> <!-- Local jar -->
+        </dependency>
+        <dependency>
+            <groupId>com.github.Schottky-spi</groupId>
             <artifactId>zener-language</artifactId>
             <version>v1.2.2-SNAPSHOT</version> <!-- Local jar -->
         </dependency>
