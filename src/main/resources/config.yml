@@ -1,0 +1,82 @@
+# the maximum level that can be achieved using a core
+maxLevel: 6
+# The locale that all messages will be translated to. Natively supported locales are
+# en-us and de-de
+# If you wish to have another locale that is not natively supported,
+# place a file of format '<localetag>.lang' inside your plugin-folder
+# and specify the locale-tag here.
+# The file needs to be in valid '.lang'-format
+locale: en-us
+# Whether to display the level of an item as it's title.
+# If this option is true, the title will be something like
+# Iron Sword +1
+# IMPORTANT The title of an item cannot be localized and can thus
+# only be presented in english!
+displayLevelInTitle: false
+# The name of a single CoreItem. Will be displayed
+LOW:
+  # The chance that this may be dropped by a mob
+  chance: 30.0
+  # The chance that an upgrade will fail
+  failChance: 80.0
+  # The entities that this can be dropped from
+  entities:
+    - SPIDER
+    - ZOMBIE
+    - SKELETON
+  # The amount of damage to add each level
+  damageModifier: 1.0
+  # The amount of armor to add each level
+  armorModifier: 1.0
+  # optional attack speed modifier
+  # attackSpeedModifier: 0.0
+  # optional armor-toughness modifier
+  # armorToughnessModifier: 0.0
+  # The display-material
+  material: YELLOW_DYE
+  # what materials this is applicable on
+  applicableOn:
+    - TURTLE
+    - LEATHER
+    - CHAIN_MAIL
+    - WOOD
+    - STONE
+  # The display-color of this core
+  color: YELLOW
+  lore:
+    - uc.description1
+    - uc.description2
+MEDIUM:
+  chance: 15.0
+  failChance: 30.0
+  entities:
+    - MAGMA_CUBE
+    - GHAST
+    - BLAZE
+  damageModifier: 1.0
+  armorModifier: 1.0
+  material: ORANGE_DYE
+  applicableOn:
+    - IRON
+    - GOLD
+  color: GOLD
+  lore:
+    - uc.description1
+    - uc.description2
+HIGH:
+  chance: 5.0
+  failChance: 20.0
+  entities:
+    - WITCH
+    - WITHER
+    - ENDER_DRAGON
+  damageModifier: 1.0
+  armorModifier: 1.0
+  material: RED_DYE
+  applicableOn:
+    - DIAMOND
+    - NETHERITE
+  color: RED
+  lore:
+    - uc.description1
+    - uc.description2

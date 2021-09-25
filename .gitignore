@@ -1,0 +1,8 @@
+# Project exclude paths
+/target/
+/logo/
+/.idea/
+/logs/
+/dependency-reduced-pom.xml
+/UpgradingCore+.iml
+/upgradingCorePlus (1).iml

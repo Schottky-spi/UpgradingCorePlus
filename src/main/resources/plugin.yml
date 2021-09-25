@@ -1,0 +1,17 @@
+main: de.schottky.UpgradingCorePlugin
+name: ${project.name}
+version: ${project.version}
+api-version: '1.15'
+commands:
+  getcore:
+    description: returns a specific core
+    usage: /getcore <core-name> [<amount>]
+    permission: uc.get
+  ucreload:
+    description: reloads the config options
+    usage: /ucreload
+    permission: uc.reload
+  listcores:
+    description: lists all available cores
+    usage: /listcores
+    permission: uc.list
