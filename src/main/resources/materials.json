@@ -62,12 +62,12 @@
     },
     "BOW": {
       "attackDamage": 1.0,
-      "attackSpeed": -2.9,
+      "attackSpeed": 0.0,
       "tool": "BOW"
     },
     "CROSSBOW": {
       "attackDamage": 1.0,
-      "attackSpeed": -2.9,
+      "attackSpeed": 0.0,
       "tool": "CROSSBOW"
     },
     "WOODEN_HOE": {
