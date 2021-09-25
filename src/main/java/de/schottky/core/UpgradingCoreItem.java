@@ -27,6 +27,8 @@ public class UpgradingCoreItem extends CoreItem {
     private final double armorToughnessModifier;
     private final double damageModifier;
     private final double attackSpeedModifier;
+    private final double arrowDamageMultiplier;
+    private final double arrowSpeedMultiplier;
 
     public UpgradingCoreItem(final String name, final ConfigurationSection section) throws InvalidConfiguration {
         super(name, section);
@@ -34,6 +36,10 @@ public class UpgradingCoreItem extends CoreItem {
         this.armorToughnessModifier = section.getDouble("armorToughnessModifier", 0);
         this.damageModifier = ConfigUtil.getRequiredDouble(section, "damageModifier");
         this.attackSpeedModifier = section.getDouble("attackSpeedModifier", 0);
+
+        //damage addition for bow/crossbow = val*arrowDamageMultiplier
+        this.arrowDamageMultiplier = section.getDouble("arrowDamageMultiplier", 1.0);
+        this.arrowSpeedMultiplier = section.getDouble("arrowSpeedMultiplier", 1.0);
     }
 
     @Override
@@ -57,7 +63,11 @@ public class UpgradingCoreItem extends CoreItem {
 
     private void upgradeAttributes(@NotNull ItemStack stack) {
         if (UpgradableItem.isWeapon(stack.getType())) {
-            UpgradableWeapon.increaseAttributesOf(stack, damageModifier, attackSpeedModifier);
+            if(stack.getType()==Material.BOW || stack.getType()==Material.CROSSBOW){
+                UpgradableWeapon.increaseAttributesOf(stack, arrowDamageMultiplier*damageModifier, arrowSpeedMultiplier*attackSpeedModifier);
+            }else{
+                UpgradableWeapon.increaseAttributesOf(stack, damageModifier, attackSpeedModifier);
+            }
         } else if (UpgradableItem.isArmor(stack.getType())) {
             UpgradableArmor.increaseAttributesOf(stack, armorModifier, armorToughnessModifier);
         }
