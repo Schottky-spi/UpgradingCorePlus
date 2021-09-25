@@ -56,10 +56,10 @@ public class UpgradableArmor extends UpgradableItem {
         return armor == null ? OptionalDouble.empty() : OptionalDouble.of(armor.defaultArmorToughness);
     }
 
-    public static void increaseAttributesOf(@NotNull ItemStack stack, double damage, double attackSpeed) {
+    public static void increaseAttributesOf(@NotNull ItemStack stack, double armorValue, double armorToughness) {
         final UpgradableArmor armor = ALL_ARMAMENTS.get(stack.getType());
         if (armor == null) return;
-        armor.increaseAttributes(stack, damage, attackSpeed);
+        armor.increaseAttributes(stack, armorValue, armorToughness);
     }
 
     public void increaseAttributes(@NotNull ItemStack stack, double armor, double armorToughness) {
