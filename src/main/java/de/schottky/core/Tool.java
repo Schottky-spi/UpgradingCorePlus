@@ -13,7 +13,9 @@ public enum Tool {
     DIAMOND,
     NETHERITE,
     TURTLE,
-    TRIDENT;
+    TRIDENT,
+    BOW,
+    CROSSBOW;
 
     public String localize() {
         return Language.current().translate("tool." + this.name().toLowerCase());

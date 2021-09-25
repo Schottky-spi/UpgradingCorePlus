@@ -60,6 +60,16 @@
       "attackSpeed": -2.9,
       "tool": "TRIDENT"
     },
+    "BOW": {
+      "attackDamage": 0.0,
+      "attackSpeed": -2.9,
+      "tool": "BOW"
+    },
+    "CROSSBOW": {
+      "attackDamage": 0.0,
+      "attackSpeed": -2.9,
+      "tool": "CROSSBOW"
+    },
     "WOODEN_HOE": {
       "attackDamage": 0.0,
       "attackSpeed": -3.0,

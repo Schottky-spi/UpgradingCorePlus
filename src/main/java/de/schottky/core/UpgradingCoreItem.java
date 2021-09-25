@@ -59,7 +59,7 @@ public class UpgradingCoreItem extends CoreItem {
         if (UpgradableItem.isWeapon(stack.getType())) {
             UpgradableWeapon.increaseAttributesOf(stack, damageModifier, attackSpeedModifier);
         } else if (UpgradableItem.isArmor(stack.getType())) {
-            UpgradableArmor.increaseAttributesOf(stack, armorModifier, attackSpeedModifier);
+            UpgradableArmor.increaseAttributesOf(stack, armorModifier, armorToughnessModifier);
         }
         updateVisualsOf(stack);
     }
