@@ -38,8 +38,6 @@ public class UpgradingCoreItem extends CoreItem {
         this.armorToughnessModifier = section.getDouble("armorToughnessModifier", 0);
         this.damageModifier = ConfigUtil.getRequiredDouble(section, "damageModifier");
         this.attackSpeedModifier = section.getDouble("attackSpeedModifier", 0);
-
-        //damage addition for bow/crossbow = val*arrowDamageMultiplier
         this.arrowDamageModifier = section.getDouble("arrowDamageModifier", 0.0);
     }
 
