@@ -1,7 +1,6 @@
 package de.schottky.event;
 
 import de.schottky.core.UpgradingCoreItem;
-import de.schottky.util.Timers;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -9,6 +8,8 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import static de.schottky.util.Timers.runLater;
 
 public class VisualChangeListener implements Listener {
 
@@ -23,6 +24,6 @@ public class VisualChangeListener implements Listener {
     }
 
     private void update(ItemStack stack) {
-        Timers.runLater(1, () -> UpgradingCoreItem.updateVisualsIfTagged(stack));
+        runLater(1, () -> UpgradingCoreItem.updateVisualsIfTagged(stack));
     }
 }

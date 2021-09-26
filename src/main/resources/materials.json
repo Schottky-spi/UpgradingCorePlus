@@ -1,5 +1,5 @@
 {
-  "WEAPON": {
+  "MELEE": {
     "WOODEN_SWORD": {
       "attackDamage": 3.0,
       "attackSpeed": -2.4,
@@ -149,6 +149,16 @@
       "attackDamage": 1.5,
       "attackSpeed": -3.0,
       "tool": "WOOD"
+    }
+  },
+  "RANGED": {
+    "BOW": {
+      "arrowDamage": 0.0,
+      "tool": "BOW"
+    },
+    "CROSSBOW": {
+      "arrowDamage": 0.0,
+      "tool": "CROSSBOW"
     }
   },
   "ARMOR": {

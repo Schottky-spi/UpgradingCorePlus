@@ -21,19 +21,28 @@ import java.util.Optional;
 public abstract class UpgradableItem {
 
     public static boolean isUpgradable(Material material) {
-        return UpgradableArmor.ALL_ARMAMENTS.containsKey(material) || UpgradableWeapon.ALL_WEAPONS.containsKey(material);
+        return UpgradableArmor.ALL_ARMAMENTS.containsKey(material) ||
+                UpgradableMeleeWeapon.ALL_WEAPONS.containsKey(material) ||
+                UpgradableRangedWeapon.ALL_WEAPONS.containsKey(material);
     }
 
     public static Optional<Tool> getTool(Material material) {
         UpgradableItem item = UpgradableArmor.ALL_ARMAMENTS.get(material);
         if (item == null) {
-            item = UpgradableWeapon.ALL_WEAPONS.get(material);
+            item = UpgradableMeleeWeapon.ALL_WEAPONS.get(material);
+        }
+        if (item == null) {
+            item = UpgradableRangedWeapon.ALL_WEAPONS.get(material);
         }
         return item == null ? Optional.empty() : Optional.of(item.tool);
     }
 
-    public static boolean isWeapon(Material material) {
-        return UpgradableWeapon.ALL_WEAPONS.containsKey(material);
+    public static boolean isMeleeWeapon(Material material) {
+        return UpgradableMeleeWeapon.ALL_WEAPONS.containsKey(material);
+    }
+
+    public static boolean isRangedWeapon(Material material) {
+        return UpgradableRangedWeapon.ALL_WEAPONS.containsKey(material);
     }
 
     public static boolean isArmor(Material material) {
@@ -62,15 +71,20 @@ public abstract class UpgradableItem {
     }
 
     private static void fromJson(@NotNull JsonObject object) {
-        final JsonObject weapons = object.getAsJsonObject("WEAPON");
-        for (Entry<String, JsonElement> entry: weapons.entrySet()) {
+        final var meleeWeapons = object.getAsJsonObject("MELEE");
+        for (Entry<String, JsonElement> entry: meleeWeapons.entrySet()) {
             materialForName(entry.getKey()).ifPresent(mat ->
-                    UpgradableWeapon.fromJson(entry.getValue().getAsJsonObject(), mat));
+                    UpgradableMeleeWeapon.fromJson(entry.getValue().getAsJsonObject(), mat));
         }
-        final JsonObject armaments = object.getAsJsonObject("ARMOR");
+        final var armaments = object.getAsJsonObject("ARMOR");
         for (Entry<String, JsonElement> entry: armaments.entrySet()) {
             final EquipmentSlot slot = EquipmentSlot.valueOf(entry.getKey());
             parseAllArmaments(entry.getValue().getAsJsonObject(), slot);
+        }
+        final var rangedWeapons = object.getAsJsonObject("RANGED");
+        for (Entry<String, JsonElement> entry: rangedWeapons.entrySet()) {
+            materialForName(entry.getKey()).ifPresent(mat ->
+                    UpgradableRangedWeapon.fromJson(entry.getValue().getAsJsonObject(), mat));
         }
     }
 

@@ -275,36 +275,27 @@ public class RefactorMenu {
             ForgingResult result = coreItem.forge(inventory.getItem(itemSlot), clicker);
             Sound sound = null;
             switch (result) {
-                case FAILED:
+                case FAILED -> {
                     shrinkCoreSlot(inventory);
                     clicker.sendMessage(ChatColor.RED + lang.translate("message.forging_failed"));
                     sound = Sound.BLOCK_ANVIL_BREAK;
-                    break;
-                case SUCCESS:
+                }
+                case SUCCESS -> {
                     shrinkCoreSlot(inventory);
                     sound = Sound.BLOCK_ANVIL_USE;
                     clicker.sendMessage(ChatColor.GREEN + lang.translate("message.forging_success"));
-                    break;
-                case PERMISSION_DENIED:
-                    clicker.sendMessage(ChatColor.RED + lang.translate("message.permission_denied"));
-                    break;
-                case MAX_LEVEL:
-                    clicker.sendMessage(ChatColor.RED + lang.translate("message.max_level"));
-                    break;
-                case WRONG_COMBINATION:
-                    clicker.sendMessage(ChatColor.RED + lang.translateWithExtra("message.wrong_combination",
-                            "core", coreItem.localizeName()));
-                    break;
-                default:
-                case NOT_APPLICABLE:
+                }
+                case PERMISSION_DENIED -> clicker.sendMessage(ChatColor.RED + lang.translate("message.permission_denied"));
+                case MAX_LEVEL -> clicker.sendMessage(ChatColor.RED + lang.translate("message.max_level"));
+                case WRONG_COMBINATION -> clicker.sendMessage(ChatColor.RED + lang.translateWithExtra("message.wrong_combination",
+                        "core", coreItem.localizeName()));
+                case NOT_APPLICABLE -> {
                     clicker.sendMessage(ChatColor.RED + lang.translate("message.forging_not_applicable"));
                     sound = Sound.ENTITY_VILLAGER_NO;
-                    break;
+                }
             }
-            if (sound != null) {
-                Sound finalSound = sound;
-                Objects.cast(clicker, Player.class, player ->
-                        player.playSound(player.getLocation(), finalSound, 1.0f, 1.0f));
+            if (sound != null && clicker instanceof Player player) {
+                player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
             }
         });
     }

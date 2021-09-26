@@ -25,6 +25,7 @@
   "ident.armor_toughness": "Rüstungshärte",
   "ident.damage": "Schaden",
   "ident.attack_speed": "Angriffsgeschwindigkeit",
+  "ident.arrow_damage": "Pfeilschaden",
   "tool.turtle": "Schildkröte",
   "tool.trident": "Dreizack",
   "tool.wood": "Holz",
@@ -34,5 +35,7 @@
   "tool.iron": "Eisen",
   "tool.gold": "Gold",
   "tool.diamond": "Diamant",
-  "tool.netherite": "Netherite"
+  "tool.netherite": "Netherite",
+  "tool.bow": "Bogen",
+  "tool.crossbow": "Armbrust"
 }

@@ -21,12 +21,16 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.md_5.bungee.api.ChatColor.GREEN;
+import static net.md_5.bungee.api.ChatColor.YELLOW;
+
 public class UpgradingCoreItem extends CoreItem {
 
     private final double armorModifier;
     private final double armorToughnessModifier;
     private final double damageModifier;
     private final double attackSpeedModifier;
+    private final double arrowDamageModifier;
 
     public UpgradingCoreItem(final String name, final ConfigurationSection section) throws InvalidConfiguration {
         super(name, section);
@@ -34,6 +38,7 @@ public class UpgradingCoreItem extends CoreItem {
         this.armorToughnessModifier = section.getDouble("armorToughnessModifier", 0);
         this.damageModifier = ConfigUtil.getRequiredDouble(section, "damageModifier");
         this.attackSpeedModifier = section.getDouble("attackSpeedModifier", 0);
+        this.arrowDamageModifier = section.getDouble("arrowDamageModifier", 0.0);
     }
 
     @Override
@@ -56,8 +61,10 @@ public class UpgradingCoreItem extends CoreItem {
     }
 
     private void upgradeAttributes(@NotNull ItemStack stack) {
-        if (UpgradableItem.isWeapon(stack.getType())) {
-            UpgradableWeapon.increaseAttributesOf(stack, damageModifier, attackSpeedModifier);
+        if (UpgradableItem.isRangedWeapon(stack.getType())) {
+            UpgradableRangedWeapon.increaseAttributes(stack, arrowDamageModifier);
+        } else if (UpgradableItem.isMeleeWeapon(stack.getType())) {
+            UpgradableMeleeWeapon.increaseAttributesOf(stack, damageModifier, attackSpeedModifier);
         } else if (UpgradableItem.isArmor(stack.getType())) {
             UpgradableArmor.increaseAttributesOf(stack, armorModifier, armorToughnessModifier);
         }
@@ -77,7 +84,7 @@ public class UpgradingCoreItem extends CoreItem {
         if (meta == null)
             return;
 
-        final Lore lore = Lore.of(meta);
+        final var lore = Lore.of(meta);
         final int startingLine = (ItemStorage.getInt(meta, LORE_IDENT, lore.size()) & 0xFFFF0000) >> 16;
         final int length = (ItemStorage.getInt(meta, LORE_IDENT, 0) & 0x0000FFFF);
 
@@ -96,7 +103,8 @@ public class UpgradingCoreItem extends CoreItem {
         List<String> newEntries = new ArrayList<>();
         setItemTitle(meta, stack.getType());
         appendLevelDesc(itemLevelFor(meta), newEntries);
-        appendWeaponDescription(stack, newEntries);
+        appendMeleeDescription(stack, newEntries);
+        appendRangedDescription(stack, newEntries);
         appendArmamentsDescription(stack, newEntries);
         return newEntries;
     }
@@ -116,8 +124,8 @@ public class UpgradingCoreItem extends CoreItem {
     }
 
     @Contract(mutates = "param2")
-    private static void appendWeaponDescription(final @NotNull ItemStack stack, final @NotNull List<String> appendTo) {
-        if (UpgradableItem.isWeapon(stack.getType())) {
+    private static void appendMeleeDescription(final @NotNull ItemStack stack, final @NotNull List<String> appendTo) {
+        if (UpgradableItem.isMeleeWeapon(stack.getType())) {
             double damage = Items.computeAttackDamage(stack);
             double attackSpeed = Items.computeAttackSpeed(stack);
             if (damage > 0)
@@ -128,19 +136,36 @@ public class UpgradingCoreItem extends CoreItem {
     }
 
     @Contract(mutates = "param2")
+    private static void appendRangedDescription(
+            final @NotNull ItemStack stack,
+            final @NotNull List<String> newEntries)
+    {
+        if (UpgradableItem.isRangedWeapon(stack.getType())) {
+            final var damage = ItemStorage.getDouble(
+                    stack.getItemMeta(),
+                    UpgradableRangedWeapon.DAMAGE_KEY,
+                    0
+            );
+            if (damage > 0) {
+                newEntries.add(GREEN + "+" + damage + Language.current().translate("ident.arrow_damage"));
+            }
+        }
+    }
+
+    @Contract(mutates = "param2")
     private static void appendArmamentsDescription(final @NotNull ItemStack stack, final @NotNull List<String> appendTo) {
         if (UpgradableItem.isArmor(stack.getType())) {
             double armor = Items.computeArmor(stack);
             double toughness = Items.computeArmorToughness(stack);
             if (armor > 0)
-                appendTo.add(ChatColor.GREEN + "+" + armor + " " + Language.current().translate("ident.armor"));
+                appendTo.add(GREEN + "+" + armor + " " + Language.current().translate("ident.armor"));
             if (toughness > 0)
-                appendTo.add(ChatColor.GREEN + "+" + toughness + " " + Language.current().translate("ident.armor_toughness"));
+                appendTo.add(GREEN + "+" + toughness + " " + Language.current().translate("ident.armor_toughness"));
         }
     }
 
     private static @NotNull String displayNameFor(int level, final @NotNull Material type) {
-        return ChatColor.YELLOW + StringUtil.capitalize(type.name().replace("_", " ")) + " +" + level;
+        return YELLOW + StringUtil.capitalize(type.name().replace("_", " ")) + " +" + level;
     }
 
     public static void updateItemsInInventory(final @NotNull PlayerInventory inventory) {
@@ -162,6 +187,7 @@ public class UpgradingCoreItem extends CoreItem {
                 ", armorToughnessModifier=" + armorToughnessModifier +
                 ", damageModifier=" + damageModifier +
                 ", attackSpeedModifier=" + attackSpeedModifier +
+                ", arrowDamageModifier=" + arrowDamageModifier +
                 ", name='" + name + '\'' +
                 ", material=" + material +
                 ", chance=" + chance +
