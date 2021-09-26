@@ -30,7 +30,7 @@ public class UpgradingCoreItem extends CoreItem {
     private final double armorToughnessModifier;
     private final double damageModifier;
     private final double attackSpeedModifier;
-    private final double arrowDamageMultiplier;
+    private final double arrowDamageModifier;
 
     public UpgradingCoreItem(final String name, final ConfigurationSection section) throws InvalidConfiguration {
         super(name, section);
@@ -40,7 +40,7 @@ public class UpgradingCoreItem extends CoreItem {
         this.attackSpeedModifier = section.getDouble("attackSpeedModifier", 0);
 
         //damage addition for bow/crossbow = val*arrowDamageMultiplier
-        this.arrowDamageMultiplier = section.getDouble("arrowDamageModifier", 0.0);
+        this.arrowDamageModifier = section.getDouble("arrowDamageModifier", 0.0);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class UpgradingCoreItem extends CoreItem {
 
     private void upgradeAttributes(@NotNull ItemStack stack) {
         if (UpgradableItem.isRangedWeapon(stack.getType())) {
-            UpgradableRangedWeapon.increaseAttributes(stack, arrowDamageMultiplier);
+            UpgradableRangedWeapon.increaseAttributes(stack, arrowDamageModifier);
         } else if (UpgradableItem.isMeleeWeapon(stack.getType())) {
             UpgradableMeleeWeapon.increaseAttributesOf(stack, damageModifier, attackSpeedModifier);
         } else if (UpgradableItem.isArmor(stack.getType())) {
@@ -189,6 +189,7 @@ public class UpgradingCoreItem extends CoreItem {
                 ", armorToughnessModifier=" + armorToughnessModifier +
                 ", damageModifier=" + damageModifier +
                 ", attackSpeedModifier=" + attackSpeedModifier +
+                ", arrowDamageModifier=" + arrowDamageModifier +
                 ", name='" + name + '\'' +
                 ", material=" + material +
                 ", chance=" + chance +

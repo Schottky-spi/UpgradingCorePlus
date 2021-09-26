@@ -13,15 +13,15 @@ import java.util.Objects;
 public class UpgradableRangedWeapon extends UpgradableItem {
     public static final Map<Material, UpgradableRangedWeapon> ALL_WEAPONS = new EnumMap<>(Material.class);
 
-    public final double arrowDamageMultiplier;
+    public final double arrowDamageModifier;
 
     public UpgradableRangedWeapon(
             Tool tool,
             Material material,
-            double arrowDamageMultiplier
+            double arrowDamageModifier
     ) {
         super(tool, material);
-        this.arrowDamageMultiplier = arrowDamageMultiplier;
+        this.arrowDamageModifier = arrowDamageModifier;
         ALL_WEAPONS.put(material, this);
     }
 
@@ -50,7 +50,7 @@ public class UpgradableRangedWeapon extends UpgradableItem {
     @Override
     public String toString() {
         return "UpgradableRangedWeapon{" +
-                "arrowDamageMultiplier=" + arrowDamageMultiplier +
+                "arrowDamageMultiplier=" + arrowDamageModifier +
                 '}';
     }
 
@@ -59,11 +59,11 @@ public class UpgradableRangedWeapon extends UpgradableItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UpgradableRangedWeapon that = (UpgradableRangedWeapon) o;
-        return Double.compare(that.arrowDamageMultiplier, arrowDamageMultiplier) == 0;
+        return Double.compare(that.arrowDamageModifier, arrowDamageModifier) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(arrowDamageMultiplier);
+        return Objects.hash(arrowDamageModifier);
     }
 }
