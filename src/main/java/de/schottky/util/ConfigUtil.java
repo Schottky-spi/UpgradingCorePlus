@@ -2,25 +2,56 @@ package de.schottky.util;
 
 import com.github.schottky.zener.messaging.Console;
 import de.schottky.exception.InvalidConfiguration;
+import de.schottky.expression.ExpressionParseException;
+import de.schottky.expression.Modifier;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 import java.util.Objects;
-import java.util.Set;
 
 public class ConfigUtil {
 
     public static double getRequiredDouble(
             @NotNull ConfigurationSection section,
-            String name) throws InvalidConfiguration
-    {
+            String name
+    ) throws InvalidConfiguration {
         if (section.contains(name) && section.isDouble(name)) {
             return section.getDouble(name);
         } else {
             throw InvalidConfiguration.required(name);
+        }
+    }
+
+    @Contract("_, _ -> new")
+    public static @NotNull Modifier getRequiredModifier(
+            @NotNull ConfigurationSection section,
+            String name
+    ) throws InvalidConfiguration {
+        return getModifier(section, name).orElseThrow(() -> InvalidConfiguration.required(name));
+    }
+
+    public static Optional<Modifier> getModifier(
+            @NotNull ConfigurationSection section,
+            String name
+    ) throws InvalidConfiguration {
+        if (section.isDouble(name)) {
+            return Optional.of(
+                    new Modifier.Simple(section.getDouble(name))
+            );
+        } else if (section.isString(name)) {
+            try {
+                return Optional.of(
+                        Modifier.parse(section.getString(name))
+                );
+            } catch (ExpressionParseException e) {
+                throw InvalidConfiguration.parsingFailed(e, name);
+            }
+        } else {
+            return Optional.empty();
         }
     }
 
