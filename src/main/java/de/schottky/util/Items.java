@@ -39,6 +39,31 @@ public class Items {
         return computeAttribute(stack, Attribute.GENERIC_ARMOR_TOUGHNESS, 0, UpgradableArmor::defaultArmorToughness);
     }
 
+    public static boolean isBoot(@NotNull ItemStack stack){
+        return (stack.getType()==Material.CHAINMAIL_BOOTS||stack.getType()==Material.DIAMOND_BOOTS||
+                stack.getType()==Material.GOLDEN_BOOTS||stack.getType()==Material.IRON_BOOTS||
+                stack.getType()==Material.LEATHER_BOOTS||stack.getType()==Material.NETHERITE_BOOTS);
+    }
+
+    public static boolean isChestplate(@NotNull ItemStack stack){
+        return (stack.getType()==Material.CHAINMAIL_CHESTPLATE||stack.getType()==Material.DIAMOND_CHESTPLATE||
+                stack.getType()==Material.GOLDEN_CHESTPLATE||stack.getType()==Material.IRON_CHESTPLATE||
+                stack.getType()==Material.LEATHER_CHESTPLATE||stack.getType()==Material.NETHERITE_CHESTPLATE);
+    }
+
+    public static boolean isLeggings(@NotNull ItemStack stack){
+        return (stack.getType()==Material.CHAINMAIL_LEGGINGS||stack.getType()==Material.DIAMOND_LEGGINGS||
+                stack.getType()==Material.GOLDEN_LEGGINGS||stack.getType()==Material.IRON_LEGGINGS||
+                stack.getType()==Material.LEATHER_LEGGINGS||stack.getType()==Material.NETHERITE_LEGGINGS);
+    }
+
+    public static boolean isHelmet(@NotNull ItemStack stack){
+        return (stack.getType()==Material.CHAINMAIL_HELMET||stack.getType()==Material.DIAMOND_HELMET||
+                stack.getType()==Material.GOLDEN_HELMET||stack.getType()==Material.IRON_HELMET||
+                stack.getType()==Material.LEATHER_HELMET||stack.getType()==Material.NETHERITE_HELMET||
+                stack.getType()==Material.TURTLE_HELMET);
+    }
+
     private static double computeAttribute(
             @NotNull ItemStack stack,
             Attribute attribute,

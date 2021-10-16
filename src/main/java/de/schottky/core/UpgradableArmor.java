@@ -2,6 +2,7 @@ package de.schottky.core;
 
 import com.google.gson.JsonObject;
 import de.schottky.util.AttributeUtil;
+import de.schottky.util.Items;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -63,15 +64,33 @@ public class UpgradableArmor extends UpgradableItem {
     }
 
     public void increaseAttributes(@NotNull ItemStack stack, double armor, double armorToughness) {
+        UUID armor_uuid=UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
+        UUID toughness_uuid=UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3");
+        if(Items.isBoot(stack)){
+            armor_uuid=UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B");
+            toughness_uuid=UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B");
+        }
+        else if(Items.isHelmet(stack)){
+            armor_uuid=UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150");
+            toughness_uuid=UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150");
+        }
+        else if(Items.isChestplate(stack)){
+            armor_uuid=UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E");
+            toughness_uuid=UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E");
+        }
+        else if(Items.isLeggings(stack)){
+            armor_uuid=UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D");
+            toughness_uuid=UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D");
+        }
         AttributeUtil.increaseAttribute(stack, Attribute.GENERIC_ARMOR, armor, new AttributeModifier(
-                UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF"),
+                armor_uuid,
                 "Armor modifier",
                 this.defaultArmor + armor,
                 AttributeModifier.Operation.ADD_NUMBER,
                 this.slot));
 
         AttributeUtil.increaseAttribute(stack, Attribute.GENERIC_ARMOR_TOUGHNESS, armorToughness, new AttributeModifier(
-                UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3"),
+                toughness_uuid,
                 "Armor toughness",
                 this.defaultArmorToughness + armorToughness,
                 AttributeModifier.Operation.ADD_NUMBER,
