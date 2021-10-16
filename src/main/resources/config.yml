@@ -32,10 +32,10 @@ LOW:
   # attackSpeedModifier: 0.0
   # optional armor-toughness modifier
   # armorToughnessModifier: 0.0
-  # optional arrow-damage multiplier (damage addition for bow/crossbow = val*arrowDamageMultiplier)
-  # arrowDamageMultiplier: 0.5 //Default=1.0
-  # optional arrow-speed multiplier(NOT implement yet) (speed addition for bow/crossbow = val*arrowSpeedMultiplier)
-  # arrowSpeedMultiplier: 1.0
+  # optional arrow-damage modifier
+  # -> The amount of additional damage a single arrow hit will deal
+  # each level
+  # arrowDamageModifier: 1.0
   # The display-material
   material: YELLOW_DYE
   # what materials this is applicable on
