@@ -5,6 +5,7 @@ import de.schottky.core.UpgradableMeleeWeapon;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -39,29 +40,20 @@ public class Items {
         return computeAttribute(stack, Attribute.GENERIC_ARMOR_TOUGHNESS, 0, UpgradableArmor::defaultArmorToughness);
     }
 
-    public static boolean isBoot(@NotNull ItemStack stack){
-        return (stack.getType()==Material.CHAINMAIL_BOOTS||stack.getType()==Material.DIAMOND_BOOTS||
-                stack.getType()==Material.GOLDEN_BOOTS||stack.getType()==Material.IRON_BOOTS||
-                stack.getType()==Material.LEATHER_BOOTS||stack.getType()==Material.NETHERITE_BOOTS);
+    public static boolean isBoot(@NotNull ItemStack stack) {
+        return EnchantmentTarget.ARMOR_FEET.includes(stack);
     }
 
     public static boolean isChestplate(@NotNull ItemStack stack){
-        return (stack.getType()==Material.CHAINMAIL_CHESTPLATE||stack.getType()==Material.DIAMOND_CHESTPLATE||
-                stack.getType()==Material.GOLDEN_CHESTPLATE||stack.getType()==Material.IRON_CHESTPLATE||
-                stack.getType()==Material.LEATHER_CHESTPLATE||stack.getType()==Material.NETHERITE_CHESTPLATE);
+        return EnchantmentTarget.ARMOR_TORSO.includes(stack);
     }
 
     public static boolean isLeggings(@NotNull ItemStack stack){
-        return (stack.getType()==Material.CHAINMAIL_LEGGINGS||stack.getType()==Material.DIAMOND_LEGGINGS||
-                stack.getType()==Material.GOLDEN_LEGGINGS||stack.getType()==Material.IRON_LEGGINGS||
-                stack.getType()==Material.LEATHER_LEGGINGS||stack.getType()==Material.NETHERITE_LEGGINGS);
+        return EnchantmentTarget.ARMOR_LEGS.includes(stack);
     }
 
     public static boolean isHelmet(@NotNull ItemStack stack){
-        return (stack.getType()==Material.CHAINMAIL_HELMET||stack.getType()==Material.DIAMOND_HELMET||
-                stack.getType()==Material.GOLDEN_HELMET||stack.getType()==Material.IRON_HELMET||
-                stack.getType()==Material.LEATHER_HELMET||stack.getType()==Material.NETHERITE_HELMET||
-                stack.getType()==Material.TURTLE_HELMET);
+        return EnchantmentTarget.ARMOR_HEAD.includes(stack);
     }
 
     private static double computeAttribute(
