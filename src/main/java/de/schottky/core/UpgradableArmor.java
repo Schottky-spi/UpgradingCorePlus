@@ -1,6 +1,7 @@
 package de.schottky.core;
 
 import com.google.gson.JsonObject;
+import de.schottky.expression.Modifier;
 import de.schottky.util.AttributeUtil;
 import de.schottky.util.Items;
 import org.bukkit.Material;
@@ -57,13 +58,13 @@ public class UpgradableArmor extends UpgradableItem {
         return armor == null ? OptionalDouble.empty() : OptionalDouble.of(armor.defaultArmorToughness);
     }
 
-    public static void increaseAttributesOf(@NotNull ItemStack stack, double armorValue, double armorToughness) {
+    public static void increaseAttributesOf(@NotNull ItemStack stack, Modifier armorValue, Modifier armorToughness, int level) {
         final UpgradableArmor armor = ALL_ARMAMENTS.get(stack.getType());
         if (armor == null) return;
-        armor.increaseAttributes(stack, armorValue, armorToughness);
+        armor.increaseAttributes(stack, armorValue, armorToughness, level);
     }
 
-    public void increaseAttributes(@NotNull ItemStack stack, double armor, double armorToughness) {
+    public void increaseAttributes(@NotNull ItemStack stack, Modifier armor, Modifier armorToughness, int level) {
         UUID armorUUID;
         UUID armorToughnessUUID;
         if (Items.isBoot(stack)) {
@@ -85,17 +86,17 @@ public class UpgradableArmor extends UpgradableItem {
             armorUUID = UUID_FALLBACK_ARMOR;
             armorToughnessUUID = UUID_FALLBACK_TOUGHNESS;
         }
-        AttributeUtil.increaseAttribute(stack, Attribute.GENERIC_ARMOR, armor, new AttributeModifier(
+        AttributeUtil.increaseAttribute(stack, Attribute.GENERIC_ARMOR, armor, level, new AttributeModifier(
                 armorUUID,
                 "Armor modifier",
-                this.defaultArmor + armor,
+                armor.next(this.defaultArmor, level),
                 AttributeModifier.Operation.ADD_NUMBER,
                 this.slot));
 
-        AttributeUtil.increaseAttribute(stack, Attribute.GENERIC_ARMOR_TOUGHNESS, armorToughness, new AttributeModifier(
+        AttributeUtil.increaseAttribute(stack, Attribute.GENERIC_ARMOR_TOUGHNESS, armorToughness, level, new AttributeModifier(
                 armorToughnessUUID,
                 "Armor toughness",
-                this.defaultArmorToughness + armorToughness,
+                armorToughness.next(this.defaultArmorToughness, level),
                 AttributeModifier.Operation.ADD_NUMBER,
                 this.slot));
     }

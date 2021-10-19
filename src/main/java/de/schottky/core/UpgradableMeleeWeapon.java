@@ -1,6 +1,7 @@
 package de.schottky.core;
 
 import com.google.gson.JsonObject;
+import de.schottky.expression.Modifier;
 import de.schottky.util.AttributeUtil;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -38,10 +39,10 @@ public class UpgradableMeleeWeapon extends UpgradableItem {
                 object.get("attackSpeed").getAsDouble());
     }
 
-    public static void increaseAttributesOf(@NotNull ItemStack stack, double damage, double attackSpeed) {
+    public static void increaseAttributesOf(@NotNull ItemStack stack, Modifier damage, Modifier attackSpeed, int level) {
         final UpgradableMeleeWeapon weapon = ALL_WEAPONS.get(stack.getType());
         if (weapon == null) return;
-        weapon.increaseAttributes(stack, damage, attackSpeed);
+        weapon.increaseAttributes(stack, damage, attackSpeed, level);
     }
 
     public static OptionalDouble defaultDamage(Material material) {
@@ -54,18 +55,18 @@ public class UpgradableMeleeWeapon extends UpgradableItem {
         return weapon == null ? OptionalDouble.empty() : OptionalDouble.of(weapon.attackSpeed);
     }
 
-    private void increaseAttributes(@NotNull ItemStack stack, double damage, double attackSpeed) {
-        AttributeUtil.increaseAttribute(stack, Attribute.GENERIC_ATTACK_DAMAGE, damage, new AttributeModifier(
+    private void increaseAttributes(@NotNull ItemStack stack, Modifier damage, Modifier attackSpeed, int level) {
+        AttributeUtil.increaseAttribute(stack, Attribute.GENERIC_ATTACK_DAMAGE, damage, level, new AttributeModifier(
                 UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF"),
                 "Weapon modifier",
-                this.attackDamage + damage,
+                damage.next(this.attackDamage, level),
                 AttributeModifier.Operation.ADD_NUMBER,
                 EquipmentSlot.HAND));
 
-        AttributeUtil.increaseAttribute(stack, Attribute.GENERIC_ATTACK_SPEED, attackSpeed, new AttributeModifier(
+        AttributeUtil.increaseAttribute(stack, Attribute.GENERIC_ATTACK_SPEED, attackSpeed, level, new AttributeModifier(
                 UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3"),
                 "Weapon modifier",
-                this.attackSpeed + attackSpeed,
+                attackSpeed.next(this.attackSpeed, level),
                 AttributeModifier.Operation.ADD_NUMBER,
                 EquipmentSlot.HAND));
     }
