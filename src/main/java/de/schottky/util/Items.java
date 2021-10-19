@@ -5,6 +5,7 @@ import de.schottky.core.UpgradableMeleeWeapon;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +38,22 @@ public class Items {
 
     public static double computeArmorToughness(@NotNull ItemStack stack) {
         return computeAttribute(stack, Attribute.GENERIC_ARMOR_TOUGHNESS, 0, UpgradableArmor::defaultArmorToughness);
+    }
+
+    public static boolean isBoot(@NotNull ItemStack stack) {
+        return EnchantmentTarget.ARMOR_FEET.includes(stack);
+    }
+
+    public static boolean isChestplate(@NotNull ItemStack stack){
+        return EnchantmentTarget.ARMOR_TORSO.includes(stack);
+    }
+
+    public static boolean isLeggings(@NotNull ItemStack stack){
+        return EnchantmentTarget.ARMOR_LEGS.includes(stack);
+    }
+
+    public static boolean isHelmet(@NotNull ItemStack stack){
+        return EnchantmentTarget.ARMOR_HEAD.includes(stack);
     }
 
     private static double computeAttribute(
