@@ -1,7 +1,7 @@
 main: de.schottky.UpgradingCorePlugin
 name: ${project.name}
 version: ${project.version}
-api-version: '1.15'
+api-version: '1.17'
 commands:
   getcore:
     description: returns a specific core
