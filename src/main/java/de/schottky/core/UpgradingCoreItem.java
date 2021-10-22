@@ -19,10 +19,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.md_5.bungee.api.ChatColor.GREEN;
 import static net.md_5.bungee.api.ChatColor.YELLOW;
 
 public class UpgradingCoreItem extends CoreItem {
@@ -32,6 +32,11 @@ public class UpgradingCoreItem extends CoreItem {
     private final Modifier damageModifier;
     private final Modifier attackSpeedModifier;
     private final Modifier arrowDamageModifier;
+
+    private static final DecimalFormat format = new DecimalFormat("#.##");
+    private static String format(double value) {
+        return format.format(value);
+    }
 
     public UpgradingCoreItem(final String name, final ConfigurationSection section) throws InvalidConfiguration {
         super(name, section);
@@ -131,10 +136,14 @@ public class UpgradingCoreItem extends CoreItem {
             double damage = Items.computeAttackDamage(stack);
             double attackSpeed = Items.computeAttackSpeed(stack);
             if (damage > 0)
-                appendTo.add(ChatColor.GREEN + "+" + damage + " " + Language.current().translate("ident.damage"));
+                appendTo.add(formattedAttribute(damage, "ident.damage"));
             if (attackSpeed > 0)
-                appendTo.add(ChatColor.GREEN + "+" + attackSpeed + " " + Language.current().translate("ident.attack_speed"));
+                appendTo.add(formattedAttribute(attackSpeed, "ident.attack_speed"));
         }
+    }
+    
+    private static @NotNull String formattedAttribute(double value, String languageIdent) {
+        return ChatColor.GREEN + "+" + format(value) + " " + Language.current().translate(languageIdent);
     }
 
     @Contract(mutates = "param2")
@@ -149,7 +158,7 @@ public class UpgradingCoreItem extends CoreItem {
                     0
             );
             if (damage > 0) {
-                newEntries.add(GREEN + "+" + damage + Language.current().translate("ident.arrow_damage"));
+                newEntries.add(formattedAttribute(damage, "ident.arrow_damage"));
             }
         }
     }
@@ -160,9 +169,9 @@ public class UpgradingCoreItem extends CoreItem {
             double armor = Items.computeArmor(stack);
             double toughness = Items.computeArmorToughness(stack);
             if (armor > 0)
-                appendTo.add(GREEN + "+" + armor + " " + Language.current().translate("ident.armor"));
+                appendTo.add(formattedAttribute(armor, "ident.armor"));
             if (toughness > 0)
-                appendTo.add(GREEN + "+" + toughness + " " + Language.current().translate("ident.armor_toughness"));
+                appendTo.add(formattedAttribute(toughness, "ident.armor_toughness"));
         }
     }
 
