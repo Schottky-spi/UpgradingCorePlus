@@ -7,7 +7,7 @@
     <groupId>me.schottky</groupId>
     <artifactId>upgradingCorePlus</artifactId>
     <name>UpgradingCorePlus</name>
-    <version>1.4</version>
+    <version>1.4.1</version>
 
     <pluginRepositories>
         <pluginRepository>
