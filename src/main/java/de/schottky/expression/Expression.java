@@ -21,7 +21,7 @@ public record Expression(Node root) {
         }
     }
 
-    interface Node {
+    public interface Node {
 
         @Contract("_, _, _ -> new")
         static @NotNull Node operation(Operation.Type type, double left, double right) {

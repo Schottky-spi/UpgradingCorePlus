@@ -98,7 +98,7 @@ public class ExpressionLexer implements Iterator<ExpressionLexer.Token> {
         }
     }
 
-    static record Token(Symbol symbol, int startIndex, int length) {}
+    public static record Token(Symbol symbol, int startIndex, int length) {}
 
     enum Symbol {
         PLUS,
