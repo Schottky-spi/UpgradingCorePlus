@@ -259,8 +259,11 @@ public abstract class CoreItem {
                     Console.warning("If you want to add the contents without localization, add the line");
                     Console.warning("'localizeLore: false' to your config");
                 } else {
-                    newLore.add(Language.current().translateWithExtra(current,
-                            "materials", ChatColor.BOLD + applicableMaterialNames()));
+                    String[] toAdd = Language.current().translateWithExtra(current,
+                            "materials", ChatColor.BOLD + applicableMaterialNames()).split("\\\\n");
+                    for (String s : toAdd){
+                        newLore.add(s);
+                    }
                 }
             } else
                 newLore.add(ChatColor.translateAlternateColorCodes('&',
@@ -270,7 +273,18 @@ public abstract class CoreItem {
     }
 
     private @NotNull String applicableMaterialNames() {
-        return String.join(", ", map(materials, Tool::localize));
+        String ori_str = String.join(", ", map(materials, Tool::localize));
+        StringBuilder origin = new StringBuilder(ori_str);
+        int cnt = 0;
+        for(int i = 0; i < origin.length(); i++) {
+            cnt++;
+            if (origin.charAt(i) == ',' && cnt>24) {
+                origin.insert(i, "\\n" + ChatColor.GRAY + ChatColor.BOLD);
+                i+=3;
+                cnt = 0;
+            }
+        }
+        return origin.toString();
     }
 
     public String localizeName() {
