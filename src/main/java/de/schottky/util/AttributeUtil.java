@@ -2,6 +2,7 @@ package de.schottky.util;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import de.schottky.expression.Modifier;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.ItemStack;
@@ -22,9 +23,10 @@ public class AttributeUtil {
     public static void increaseAttribute(
             @NotNull ItemStack stack,
             Attribute attribute,
-            double byValue,
-            AttributeModifier ifAbsent)
-    {
+            Modifier byValue,
+            int level,
+            AttributeModifier ifAbsent
+    ) {
         final ItemMeta meta = stack.getItemMeta();
         if (meta == null) return;
 
@@ -37,7 +39,7 @@ public class AttributeUtil {
                 final AttributeModifier newModifier = new AttributeModifier(
                         modifier.getUniqueId(),
                         modifier.getName(),
-                        modifier.getAmount() + byValue,
+                        byValue.next(modifier.getAmount(), level),
                         modifier.getOperation(),
                         modifier.getSlot()
                 );

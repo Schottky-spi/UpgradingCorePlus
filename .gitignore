@@ -4,6 +4,5 @@
 /.idea/
 /logs/
 /dependency-reduced-pom.xml
-/UpgradingCore+.iml
-/upgradingCorePlus (1).iml
 /libs
+*.iml

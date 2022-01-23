@@ -2,6 +2,7 @@ package de.schottky.core;
 
 import com.github.schottky.zener.util.item.ItemStorage;
 import com.google.gson.JsonObject;
+import de.schottky.expression.Modifier;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -37,12 +38,13 @@ public class UpgradableRangedWeapon extends UpgradableItem {
 
     public static void increaseAttributes(
             @NotNull ItemStack itemStack,
-            double damage
+            Modifier modifier,
+            int level
     ) {
         final var meta = itemStack.getItemMeta();
         if (meta == null) return;
         final var previousValue = ItemStorage.getDouble(meta, DAMAGE_KEY, 0);
-        final var newValue = previousValue + damage;
+        final var newValue = modifier.next(previousValue, level);
         ItemStorage.set(meta, newValue, DAMAGE_KEY);
         itemStack.setItemMeta(meta);
     }

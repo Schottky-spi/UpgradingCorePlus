@@ -5,6 +5,7 @@ import com.github.schottky.zener.util.item.ItemStorage;
 import com.github.schottky.zener.util.item.Lore;
 import de.schottky.Options;
 import de.schottky.exception.InvalidConfiguration;
+import de.schottky.expression.Modifier;
 import de.schottky.util.*;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
@@ -18,27 +19,32 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.md_5.bungee.api.ChatColor.GREEN;
 import static net.md_5.bungee.api.ChatColor.YELLOW;
 
 public class UpgradingCoreItem extends CoreItem {
 
-    private final double armorModifier;
-    private final double armorToughnessModifier;
-    private final double damageModifier;
-    private final double attackSpeedModifier;
-    private final double arrowDamageModifier;
+    private final Modifier armorModifier;
+    private final Modifier armorToughnessModifier;
+    private final Modifier damageModifier;
+    private final Modifier attackSpeedModifier;
+    private final Modifier arrowDamageModifier;
+
+    private static final DecimalFormat format = new DecimalFormat("#.##");
+    private static String format(double value) {
+        return format.format(value);
+    }
 
     public UpgradingCoreItem(final String name, final ConfigurationSection section) throws InvalidConfiguration {
         super(name, section);
-        this.armorModifier = ConfigUtil.getRequiredDouble(section, "armorModifier");
-        this.armorToughnessModifier = section.getDouble("armorToughnessModifier", 0);
-        this.damageModifier = ConfigUtil.getRequiredDouble(section, "damageModifier");
-        this.attackSpeedModifier = section.getDouble("attackSpeedModifier", 0);
-        this.arrowDamageModifier = section.getDouble("arrowDamageModifier", 0.0);
+        this.armorModifier = ConfigUtil.getRequiredModifier(section, "armorModifier");
+        this.armorToughnessModifier = ConfigUtil.getModifier(section, "armorToughnessModifier").orElse(Modifier.noop());
+        this.damageModifier = ConfigUtil.getRequiredModifier(section, "damageModifier");
+        this.attackSpeedModifier = ConfigUtil.getModifier(section, "attackSpeedModifier").orElse(Modifier.noop());
+        this.arrowDamageModifier = ConfigUtil.getModifier(section, "arrowDamageModifier").orElse(Modifier.noop());
     }
 
     @Override
@@ -54,19 +60,20 @@ public class UpgradingCoreItem extends CoreItem {
         final ItemMeta meta = stack.getItemMeta();
         assert meta != null;
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        ItemStorage.set(meta, itemLevelFor(meta) + 1, "level");
+        var level = itemLevelFor(meta) + 1;
+        ItemStorage.set(meta,  level, "level");
         stack.setItemMeta(meta);
-        upgradeAttributes(stack);
+        upgradeAttributes(stack, level);
         return ForgingResult.SUCCESS;
     }
 
-    private void upgradeAttributes(@NotNull ItemStack stack) {
+    private void upgradeAttributes(@NotNull ItemStack stack, int level) {
         if (UpgradableItem.isRangedWeapon(stack.getType())) {
-            UpgradableRangedWeapon.increaseAttributes(stack, arrowDamageModifier);
+            UpgradableRangedWeapon.increaseAttributes(stack, arrowDamageModifier, level);
         } else if (UpgradableItem.isMeleeWeapon(stack.getType())) {
-            UpgradableMeleeWeapon.increaseAttributesOf(stack, damageModifier, attackSpeedModifier);
+            UpgradableMeleeWeapon.increaseAttributesOf(stack, damageModifier, attackSpeedModifier, level);
         } else if (UpgradableItem.isArmor(stack.getType())) {
-            UpgradableArmor.increaseAttributesOf(stack, armorModifier, armorToughnessModifier);
+            UpgradableArmor.increaseAttributesOf(stack, armorModifier, armorToughnessModifier, level);
         }
         updateVisualsOf(stack);
     }
@@ -129,10 +136,14 @@ public class UpgradingCoreItem extends CoreItem {
             double damage = Items.computeAttackDamage(stack);
             double attackSpeed = Items.computeAttackSpeed(stack);
             if (damage > 0)
-                appendTo.add(ChatColor.GREEN + "+" + damage + " " + Language.current().translate("ident.damage"));
+                appendTo.add(formattedAttribute(damage, "ident.damage"));
             if (attackSpeed > 0)
-                appendTo.add(ChatColor.GREEN + "+" + attackSpeed + " " + Language.current().translate("ident.attack_speed"));
+                appendTo.add(formattedAttribute(attackSpeed, "ident.attack_speed"));
         }
+    }
+    
+    private static @NotNull String formattedAttribute(double value, String languageIdent) {
+        return ChatColor.GREEN + "+" + format(value) + " " + Language.current().translate(languageIdent);
     }
 
     @Contract(mutates = "param2")
@@ -147,7 +158,7 @@ public class UpgradingCoreItem extends CoreItem {
                     0
             );
             if (damage > 0) {
-                newEntries.add(GREEN + "+" + damage + Language.current().translate("ident.arrow_damage"));
+                newEntries.add(formattedAttribute(damage, "ident.arrow_damage"));
             }
         }
     }
@@ -158,9 +169,9 @@ public class UpgradingCoreItem extends CoreItem {
             double armor = Items.computeArmor(stack);
             double toughness = Items.computeArmorToughness(stack);
             if (armor > 0)
-                appendTo.add(GREEN + "+" + armor + " " + Language.current().translate("ident.armor"));
+                appendTo.add(formattedAttribute(armor, "ident.armor"));
             if (toughness > 0)
-                appendTo.add(GREEN + "+" + toughness + " " + Language.current().translate("ident.armor_toughness"));
+                appendTo.add(formattedAttribute(toughness, "ident.armor_toughness"));
         }
     }
 
