@@ -279,7 +279,7 @@ public abstract class CoreItem {
         for(int i = 0; i < origin.length(); i++) {
             cnt++;
             if (origin.charAt(i) == ',' && cnt>24) {
-                origin.insert(i, "\\n" + ChatColor.BOLD + ChatColor.GRAY);
+                origin.insert(i, "\\n" + ChatColor.GRAY + ChatColor.BOLD);
                 i+=3;
                 cnt = 0;
             }
