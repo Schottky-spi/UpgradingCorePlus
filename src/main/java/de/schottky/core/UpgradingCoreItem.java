@@ -8,6 +8,7 @@ import de.schottky.exception.InvalidConfiguration;
 import de.schottky.expression.Modifier;
 import de.schottky.util.*;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemFlag;
@@ -21,9 +22,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static net.md_5.bungee.api.ChatColor.YELLOW;
+import static org.bukkit.Bukkit.getServer;
 
 public class UpgradingCoreItem extends CoreItem {
 
@@ -86,12 +90,16 @@ public class UpgradingCoreItem extends CoreItem {
 
     private final static String LORE_IDENT = "lore";
 
+    /*
+    Rewrite updateVisualsOf so that when lores are shuffled, we can still update
+    it correctly. (Now, the upgrading core lores are always at the bottom of the lores)
+     */
     public static void updateVisualsOf(@NotNull ItemStack stack) {
         final ItemMeta meta = stack.getItemMeta();
         if (meta == null)
             return;
 
-        final var lore = Lore.of(meta);
+        /*
         final int startingLine = (ItemStorage.getInt(meta, LORE_IDENT, lore.size()) & 0xFFFF0000) >> 16;
         final int length = (ItemStorage.getInt(meta, LORE_IDENT, 0) & 0x0000FFFF);
 
@@ -102,6 +110,33 @@ public class UpgradingCoreItem extends CoreItem {
         ItemStorage.set(meta, (startingLine << 16) & 0xFFFF0000 | (newEntries.size() & 0x0000FFFF), LORE_IDENT);
 
         lore.addAll(startingLine, newEntries);
+        meta.setLore(lore);
+        stack.setItemMeta(meta);
+         */
+
+        final var lore = Lore.of(meta);
+
+        final List<Pattern> newEntries_pattern = loreEntries_pattern(stack, meta);
+
+        // Remove the lores match upgrading core lore.
+        // To remove item when iterating, use iterator
+        Iterator<String> it = lore.iterator();
+        while(it.hasNext()){
+            String s = it.next(); // Must be called before call it.remove()
+            for(Pattern p : newEntries_pattern){
+                if(p.matcher(s).find()){
+                    it.remove();
+                    break;
+                }
+            }
+        }
+
+        final List<String> newEntries = loreEntries(stack, meta);
+
+        // Store LORE_IDENT for compatibility
+        ItemStorage.set(meta, (lore.size() << 16) & 0xFFFF0000 | (newEntries.size() & 0x0000FFFF), LORE_IDENT);
+
+        lore.addAll(lore.size(), newEntries); // Append to the tail of lores
         meta.setLore(lore);
         stack.setItemMeta(meta);
     }
@@ -115,6 +150,83 @@ public class UpgradingCoreItem extends CoreItem {
         appendArmamentsDescription(stack, newEntries);
         return newEntries;
     }
+
+    /*
+    return Pattern
+     */
+    private static @NotNull List<Pattern> loreEntries_pattern(final @NotNull ItemStack stack, final @NotNull ItemMeta meta) {
+        List<Pattern> newEntries = new ArrayList<>();
+        setItemTitle(meta, stack.getType());
+        appendLevelDesc_pattern(itemLevelFor(meta), newEntries);
+        appendMeleeDescription_pattern(stack, newEntries);
+        appendRangedDescription_pattern(stack, newEntries);
+        appendArmamentsDescription_pattern(stack, newEntries);
+        return newEntries;
+    }
+
+    @Contract(mutates = "param2")
+    private static void appendLevelDesc_pattern(final int level, final @NotNull List<Pattern> appendTo) {
+        String levelDescription = Language.current().translateWithExtra("uc.level_desc",
+                "level", "([+-]?([0-9]*[.])?[0-9]+)",
+                "maxLevel", "([+-]?([0-9]*[.])?[0-9]+)");
+        if (!levelDescription.isEmpty())
+            appendTo.add(Pattern.compile(/*ChatColor.GREEN +*/ levelDescription));
+    }
+
+    @Contract(mutates = "param2")
+    private static void appendMeleeDescription_pattern(final @NotNull ItemStack stack, final @NotNull List<Pattern> appendTo) {
+        if (UpgradableItem.isMeleeWeapon(stack.getType())) {
+            double damage = Items.computeAttackDamage(stack);
+            double attackSpeed = Items.computeAttackSpeed(stack);
+            if (damage > 0)
+                appendTo.add(Pattern.compile(
+                        formattedAttribute_pattern("([+-]?([0-9]*[.])?[0-9]+)", "ident.damage")));
+            if (attackSpeed > 0)
+                appendTo.add(Pattern.compile(
+                        formattedAttribute_pattern("([+-]?([0-9]*[.])?[0-9]+)", "ident.attack_speed")));
+        }
+    }
+
+    private static @NotNull String formattedAttribute_pattern(String value, String languageIdent) {
+        return /*ChatColor.GREEN +*/ "\\+" + value + " " + Language.current().translate(languageIdent);
+    }
+
+    @Contract(mutates = "param2")
+    private static void appendRangedDescription_pattern(
+            final @NotNull ItemStack stack,
+            final @NotNull List<Pattern> newEntries)
+    {
+        if (UpgradableItem.isRangedWeapon(stack.getType())) {
+            final var damage = ItemStorage.getDouble(
+                    stack.getItemMeta(),
+                    UpgradableRangedWeapon.DAMAGE_KEY,
+                    0
+            );
+            if (damage > 0) {
+                newEntries.add(Pattern.compile(
+                        formattedAttribute_pattern("([+-]?([0-9]*[.])?[0-9]+)", "ident.arrow_damage")));
+            }
+        }
+    }
+
+    @Contract(mutates = "param2")
+    private static void appendArmamentsDescription_pattern(final @NotNull ItemStack stack, final @NotNull List<Pattern> appendTo) {
+        if (UpgradableItem.isArmor(stack.getType())) {
+            double armor = Items.computeArmor(stack);
+            double toughness = Items.computeArmorToughness(stack);
+            if (armor > 0)
+                appendTo.add(Pattern.compile(
+                        formattedAttribute_pattern("([+-]?([0-9]*[.])?[0-9]+)", "ident.armor")));
+            if (toughness > 0)
+                appendTo.add(Pattern.compile(
+                        formattedAttribute_pattern("([+-]?([0-9]*[.])?[0-9]+)", "ident.armor_toughness")));
+        }
+    }
+
+    /*
+    Above methods are Pattern return type
+     */
+
 
     private static void setItemTitle(final @NotNull ItemMeta meta, @NotNull final Material material) {
         if (Options.displayLevelInTitle)
